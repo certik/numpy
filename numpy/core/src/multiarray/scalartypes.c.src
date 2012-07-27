@@ -2592,7 +2592,15 @@ finish:
     *((npy_@name@ *)dest) = *((npy_@name@ *)src);
 #elif @default@ == 1 /* unicode and strings */
     if (itemsize == 0) { /* unicode */
+    // FIXME: The PY_VERSION_HEX does not seem to be working here...
+//#ifdef PY_HEX_VERSION >= 0x03030000
+        // FIXME: which length should we use here?
+        itemsize = ((PyUnicodeObject *)robj)->_base.utf8_length * sizeof(Py_UNICODE);
+        /*
+#else
         itemsize = ((PyUnicodeObject *)robj)->length * sizeof(Py_UNICODE);
+#endif
+*/
     }
     memcpy(dest, src, itemsize);
     /* @default@ == 2 won't get here */
