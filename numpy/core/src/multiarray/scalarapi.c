@@ -641,7 +641,7 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
             itemsize = (((itemsize - 1) >> 2) + 1) << 2;
         }
     }
-#if PY_HEX_VERSION >= 0x03030000
+#if PY_VERSION_HEX >= 0x03030000
     if (type_num == NPY_UNICODE) {
         return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, data, itemsize);
     }
@@ -677,7 +677,7 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
             memcpy(destptr, data, itemsize);
             return obj;
         }
-#if PY_HEX_VERSION < 0x03030000
+#if PY_VERSION_HEX < 0x03030000
         else if (type_num == NPY_UNICODE) {
             /* tp_alloc inherited from Python PyBaseObject_Type */
             PyUnicodeObject *uni = (PyUnicodeObject*)obj;
@@ -749,7 +749,7 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
 #endif
             return obj;
         }
-#endif // PY_HEX_VERSION < 0x03030000
+#endif // PY_VERSION_HEX < 0x03030000
         else {
             PyVoidScalarObject *vobj = (PyVoidScalarObject *)obj;
             vobj->base = NULL;
