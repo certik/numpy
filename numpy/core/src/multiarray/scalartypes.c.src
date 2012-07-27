@@ -2593,9 +2593,7 @@ finish:
 #elif @default@ == 1 /* unicode and strings */
     if (itemsize == 0) { /* unicode */
 #if PY_VERSION_HEX >= 0x03030000
-        // FIXME: which length should we use here? The current solution is
-        // known to be wrong (it compiles but tests fail):
-        itemsize = ((PyUnicodeObject *)robj)->_base.utf8_length * sizeof(Py_UNICODE);
+        itemsize = PyUnicode_GetLength(robj) * sizeof(Py_UNICODE);
 #else
         itemsize = ((PyUnicodeObject *)robj)->length * sizeof(Py_UNICODE);
 #endif
