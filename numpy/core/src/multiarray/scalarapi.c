@@ -643,7 +643,7 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
     }
 #if PY_VERSION_HEX >= 0x03030000
     if (type_num == NPY_UNICODE) {
-        return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, data, itemsize);
+        return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, data, itemsize/4);
     }
 #endif
     if (type->tp_itemsize != 0) {
