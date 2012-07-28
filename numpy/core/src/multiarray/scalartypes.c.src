@@ -2593,7 +2593,7 @@ finish:
 #elif @default@ == 1 /* unicode and strings */
     if (itemsize == 0) { /* unicode */
 #if PY_VERSION_HEX >= 0x03030000
-        itemsize = PyUnicode_GetLength(robj) * sizeof(Py_UNICODE);
+        itemsize = PyUnicode_GetLength(robj) * PyUnicode_KIND(robj);
 #else
         itemsize = ((PyUnicodeObject *)robj)->length * sizeof(Py_UNICODE);
 #endif
