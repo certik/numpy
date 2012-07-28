@@ -643,7 +643,20 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
     }
 #if PY_VERSION_HEX >= 0x03030000
     if (type_num == NPY_UNICODE) {
-        return PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, data, itemsize/4);
+        PyObject *b, *args;
+        b = PyBytes_FromStringAndSize(data, itemsize);
+        if (b == NULL) {
+            return NULL;
+        }
+        args = Py_BuildValue("(Os)", b, "utf-32");
+        if (args == NULL) {
+            Py_DECREF(b);
+            return NULL;
+        }
+        obj = type->tp_new(type, args, NULL);
+        Py_DECREF(b);
+        Py_DECREF(args);
+        return obj;
     }
 #endif
     if (type->tp_itemsize != 0) {
