@@ -644,11 +644,23 @@ PyArray_Scalar(void *data, PyArray_Descr *descr, PyObject *base)
 #if PY_VERSION_HEX >= 0x03030000
     if (type_num == NPY_UNICODE) {
         PyObject *b, *args;
-        b = PyBytes_FromStringAndSize(data, itemsize);
-        if (b == NULL) {
-            return NULL;
+        if (swap) {
+            // Force PyUnicode_New to use the UCS4 representation:
+            Py_UCS4 max_char = 0x10000;
+            b = PyUnicode_New(itemsize, max_char);
+            if (b == NULL) {
+                return NULL;
+            }
+            memcpy(PyUnicode_4BYTE_DATA(b), data, itemsize);
+            byte_swap_vector(PyUnicode_4BYTE_DATA(b), itemsize >> 2, 4);
+        } else {
+            b = PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND, data,
+                    itemsize >> 2);
+            if (b == NULL) {
+                return NULL;
+            }
         }
-        args = Py_BuildValue("(Os)", b, "utf-32");
+        args = Py_BuildValue("(O)", b);
         if (args == NULL) {
             Py_DECREF(b);
             return NULL;
